@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f5ea;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Prediction</h1>
+        <form id="predictionForm">
+            <label for="quantity1">Quantity Sold (Term 1):</label>
+            <input type="text" id="quantity1" name="quantity1" required><br>
+            <label for="quantity2">Quantity Sold (Term 2):</label>
+            <input type="text" id="quantity2" name="quantity2" required><br>
+            <label for="quantity3">Quantity Sold (Term 3):</label>
+            <input type="text" id="quantity3" name="quantity3" required><br>
+            <input type="submit" value="Predict">
+        </form>
+        <div class="result" id="predictionResult" style="display: none;">
+            <h2>Prediction Result:</h2>
+            <p id="predictedValue"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            // Gather input values
+            var quantity1 = document.getElementById("quantity1").value;
+            var quantity2 = document.getElementById("quantity2").value;
+            var quantity3 = document.getElementById("quantity3").value;
+
+            // Prepare data for POST request
+            var data = {
+                "quantity1": quantity1,
+                "quantity2": quantity2,
+                "quantity3": quantity3
+            };
+
+            // Send POST request to Flask endpoint
+            fetch("/prediction", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display prediction result
+                document.getElementById("predictedValue").textContent = data.prediction;
+                document.getElementById("predictionResult").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Handle error (display error message to user)
+                alert("Failed to make prediction. Please try again.");
+            });
+        });
+    </script>
+</body>
+</html>

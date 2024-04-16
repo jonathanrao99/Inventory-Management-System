@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+        }
+        .navbar a {
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .navbar-brand {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .content {
+            padding: 20px;
+        }
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/Analytics">Analytics</a>
+        <a href="/predict">Predictions</a>
+        <a href="/inventory">Inventory</a>
+        <a class="navbar-brand" href="#">Inventory Management System</a>
+    </div>
+
+    <div class="container">
+        <h1>Sales Analytics</h1>
+        <h2>Total Sales: {{ total_sales }}</h2>
+        <h2>Average Order Value: {{ average_order_value }}</h2>
+
+        <h2>Total Sales: {{ total_sales }}</h2>
+<h2>Average Order Value: {{ average_order_value }}</h2>
+
+<h3>Top 5 Selling Products:</h3>
+<table>
+  <tr>
+    <th>Product ID</th>
+    <th>Product Name</th>
+    <th>Quantity Sold</th>
+  </tr>
+  {% for index, row in top_selling_products.iterrows() %}
+  <tr>
+    <td>{{ row['product_id'] }}</td>
+    <td>{{ row['product_name'] }}</td>
+    <td>{{ row['quantity_stock'] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h3>Bottom 5 Selling Products:</h3>
+<table>
+  <tr>
+    <th>Product ID</th>
+    <th>Product Name</th>
+    <th>Quantity Sold</th>
+  </tr>
+  {% for index, row in bottom_selling_products.iterrows() %}
+  <tr>
+    <td>{{ row['product_id'] }}</td>
+    <td>{{ row['product_name'] }}</td>
+    <td>{{ row['quantity_stock'] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+        <title>Sales Trend</title>
+</head>
+<body>
+    <h1>Monthly Sales Trend</h1>
+    <img src="/Users/moraarvindkumar/Desktop/Major_project/static/plot.png" alt="Sales Trend">
+</body>
+    </div>
+</body>
+</html>
