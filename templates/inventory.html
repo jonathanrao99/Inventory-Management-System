@@ -85,7 +85,7 @@
             <tr>
                 <td>{{ recommendation.product_id }}</td>
                 <td>{{ recommendation.product_name }}</td>
-                <td>{{ recommendation.days_until_expiry }}</td>
+                <td>{{ recommendation.quantity_sold }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -102,7 +102,7 @@
             <tr>
                 <td>{{ recommendation.product_id }}</td>
                 <td>{{ recommendation.product_name }}</td>
-                <td>{{ recommendation.stock_to_restock }}</td>
+                <td>{{ recommendation.quantity_stock }}</td>
             </tr>
             {% endfor %}
         </table>
