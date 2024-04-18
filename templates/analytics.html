@@ -85,48 +85,41 @@
         <h2>Total Sales: {{ total_sales }}</h2>
         <h2>Average Order Value: {{ average_order_value }}</h2>
 
-        <h2>Total Sales: {{ total_sales }}</h2>
-<h2>Average Order Value: {{ average_order_value }}</h2>
+        <h3>Top 5 Selling Products:</h3>
+        <table>
+          <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Quantity Sold</th>
+          </tr>
+          {% for product in top_selling_products %}
+          <tr>
+            <td>{{ product['product_id'] }}</td>
+            <td>{{ product['product_name'] }}</td>
+            <td>{{ product['quantity_stock'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
 
-<h3>Top 5 Selling Products:</h3>
-<table>
-  <tr>
-    <th>Product ID</th>
-    <th>Product Name</th>
-    <th>Quantity Sold</th>
-  </tr>
-  {% for index, row in top_selling_products.iterrows() %}
-  <tr>
-    <td>{{ row['product_id'] }}</td>
-    <td>{{ row['product_name'] }}</td>
-    <td>{{ row['quantity_stock'] }}</td>
-  </tr>
-  {% endfor %}
-</table>
+        <h3>Bottom 5 Selling Products:</h3>
+        <table>
+          <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Quantity Sold</th>
+          </tr>
+          {% for product in bottom_selling_products %}
+          <tr>
+            <td>{{ product['product_id'] }}</td>
+            <td>{{ product['product_name'] }}</td>
+            <td>{{ product['quantity_stock'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
 
-<h3>Bottom 5 Selling Products:</h3>
-<table>
-  <tr>
-    <th>Product ID</th>
-    <th>Product Name</th>
-    <th>Quantity Sold</th>
-  </tr>
-  {% for index, row in bottom_selling_products.iterrows() %}
-  <tr>
-    <td>{{ row['product_id'] }}</td>
-    <td>{{ row['product_name'] }}</td>
-    <td>{{ row['quantity_stock'] }}</td>
-  </tr>
-  {% endfor %}
-</table>
-
-
-        <title>Sales Trend</title>
-</head>
-<body>
-    <h1>Monthly Sales Trend</h1>
-    <img src="/Users/moraarvindkumar/Desktop/Major_project/static/plot.png" alt="Sales Trend">
-</body>
+        <!-- Plot Sales Trend -->
+        <h1>Monthly Sales Trend</h1>
+        <img src="/static/plot.png" alt="Sales Trend">
     </div>
 </body>
 </html>
