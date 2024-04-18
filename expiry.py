@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Read data from CSV file
-df = pd.read_csv("/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv")
+df = pd.read_csv("Inventory-Management-System-main/data_set/data.csv")
 
 # Convert Expiration_Date to datetime
 df['Expiration_Date'] = pd.to_datetime(df['expiry_date'])
