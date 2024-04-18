@@ -6,7 +6,7 @@ import warnings
 import pickle
 
 # Replace "data.csv" with the actual path to your data filejn
-data = pd.read_csv("/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv")
+data = pd.read_csv("Inventory-Management-System-main/data_set/data.csv")
 
 try:
     # Convert date column to datetime format (handle potential errors)
