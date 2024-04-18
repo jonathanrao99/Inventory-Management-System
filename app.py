@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 from flask import render_template, request, jsonify
 import pandas as pd
 import pickle
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 from tensorflow.keras.models import Sequential # type: ignore
@@ -16,7 +16,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 app = Flask(__name__)
 
 # Load the pickled model
-model_file_path = "trained_model.pkl"
+model_file_path = "Inventory-Management-System-main/trained_model.pkl"
 try:
     with open(model_file_path, 'rb') as model_file:
         model = pickle.load(model_file)
@@ -39,7 +39,7 @@ def upload_file():
         return "No selected file"
     
     # Save the file to a desired location
-    file_path = "/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv"
+    file_path = "Inventory-Management-System-main/data_set/data.csv"
     file.save(file_path)
     
     return "File uploaded successfully!"
@@ -72,7 +72,7 @@ def recommend_near_expiry_products(data):
 @app.route('/inventory')
 def inventory():
     # Read data from CSV file
-    data_file_path = ("/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv")
+    data_file_path = ("Inventory-Management-System-main/data_set/data.csv")
     df = pd.read_csv(data_file_path)
 
     # Get recommendations for restocking and near expiry products
@@ -82,42 +82,43 @@ def inventory():
     return render_template('inventory.html', restock_recommendations=low_stock_recommendations.to_dict(orient='records'),
                            near_expiry_recommendations=near_expiry_recommendations)
 
-@app.route('/predict', methods=["POST"])
+@app.route('/predict', methods=["GET", "POST"])
 def predict():
-    try:
-    # Load the dataset (assuming the dataset path is configurable)
-        dataset_path = "/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv"
-        df = pd.read_csv(dataset_path)
+    if request.method == "POST":
+        try:
+            # Extract input data from the request
+            quantity1 = float(request.json['quantity1'])
+            quantity2 = float(request.json['quantity2'])
+            quantity3 = float(request.json['quantity3'])
 
-        # Prepare input data for prediction (example: using the last three terms of quantity_sold)
-        last_three_terms = df['quantity_sold'].values[-3:].reshape(1, -1)
+            # Prepare the input data for prediction
+            input_data = np.array([[quantity1, quantity2, quantity3]])
 
-        # Make predictions using the loaded model
-        if model:
-            predictions = model.predict(last_three_terms)
-            prediction_value = predictions[0]  # Assuming single prediction output
-        else:
-            prediction_value = "Model not available"
+            # Make predictions using the loaded model
+            if model:
+                prediction_value = model.predict(input_data)[0][0]  # Assuming single prediction output
+            else:
+                prediction_value = "Model not available"
 
-        # Return prediction result as JSON response (assuming API endpoint)
-        return jsonify({
-            "prediction": float(prediction_value)  # Convert prediction to a float value
-        })
+            # Return prediction result as JSON response
+            return jsonify({
+                "prediction": float(prediction_value)  # Convert prediction to a float value
+            })
 
-    except FileNotFoundError as e:
-        # Handle file not found error when loading the dataset
-        error_message = f"Error loading dataset: {str(e)}"
-        return jsonify({"error": error_message}), 500  # Return JSON error response with status code 500
+        except Exception as e:
+            # Handle any exceptions that occur during prediction
+            error_message = f"Failed to make prediction: {str(e)}"
+            return jsonify({"error": error_message}), 500
 
-    except Exception as e:
-        # Handle generic exceptions during prediction
-        error_message = f"Error making prediction: {str(e)}"
-        return jsonify({"error": error_message}), 500 
+    elif request.method == "GET":
+        # Render the prediction page template
+        return render_template("prediction.html")
+
 
 @app.route('/analytics')
 def sales_analytics():
     # Load data from CSV file
-    data = pd.read_csv("/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv")
+    data = pd.read_csv("Inventory-Management-System-main/data_set/data.csv")
 
     # Calculate total sales and average order value
     total_sales = data["total_revenue"].sum()
@@ -127,28 +128,30 @@ def sales_analytics():
     top_selling_products = data.nlargest(5, "quantity_stock")
     bottom_selling_products = data.nsmallest(5, "quantity_stock")
 
+    # Convert DataFrames to dictionaries
+    top_selling_dict = top_selling_products.to_dict(orient='records')
+    bottom_selling_dict = bottom_selling_products.to_dict(orient='records')
+
+    # Plot sales trend
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(data['date_sale'], data['total_revenue'], marker='o', linestyle='-')
+    ax.set_title('Monthly Sales Trend')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Total Sales')
+    ax.tick_params(axis='x', rotation=45)
+    ax.grid(True)
+    fig.tight_layout()
+
+    # Save the plot to a static file
+    sales_trend_file_path = "sales_trend.png"
+    fig.savefig(sales_trend_file_path)
+
     # Pass DataFrames to the template directly
     return render_template('analytics.html', total_sales=total_sales,
                            average_order_value=average_order_value,
-                           top_selling_products=top_selling_products,
-                           bottom_selling_products=bottom_selling_products)
+                           top_selling_products=top_selling_dict,
+                           bottom_selling_products=bottom_selling_dict)
 
-
-    # Plot sales trend
-    plt.figure(figsize=(10, 6))
-    plt.plot(monthly_sales.index, monthly_sales['total_revenue'], marker='o', linestyle='-')
-    plt.title('Monthly Sales Trend')
-    plt.xlabel('Date')
-    plt.ylabel('Total Sales')
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.tight_layout()
-
-    # Save the plot to a static file
-    sales_trend_file_path = "static/sales_trend.png"
-    plt.savefig(sales_trend_file_path)
-
-    return render_template('sales_trend.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
