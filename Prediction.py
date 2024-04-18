@@ -12,7 +12,7 @@ from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import LSTM, Dense # type: ignore
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-df = pd.read_csv('/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv')
+df = pd.read_csv('Inventory-Management-System-main/data_set/data.csv')
 
 # Preprocess data
 look_back = 3
