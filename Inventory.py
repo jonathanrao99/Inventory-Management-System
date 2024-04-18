@@ -1,20 +1,22 @@
 import pandas as pd
 
-def main():
-    # Read inventory data from CSV file
-    inventory_df = pd.read_csv("/Users/moraarvindkumar/Desktop/Major_project/data_set/data.csv")
+# Read data from CSV file
+df = pd.read_csv("Inventory-Management-System-main/data_set/data.csv")
 
-    # Display current stock levels
-    print("\n**Current Stock Levels:**")
-    print(inventory_df[["product_id", "product_name", "quantity_stock"]].to_string())
+# Convert Expiration_Date to datetime
+df['Expiration_Date'] = pd.to_datetime(df['expiry_date'])
 
-    # Check for low stock and suggest restocking
-    for index, row in inventory_df.iterrows():
-        if row["quantity_stock"] <= 10:
-            stock_difference = 10 - row["quantity_stock"]
-            print(f"\n**Low Stock Alert:** {row['product_name']} (ID: {row['product_id']})")
-            print(f"Current Quantity: {row['quantity_stock']}")
-            print(f"Suggesting restock of {stock_difference} units to reach minimum stock level.")
+# Calculate days until expiration
+df['Days_Until_Expiry'] = (df['Expiration_Date'] - pd.Timestamp.today()).dt.days
 
-if __name__ == "__main__":
-    main()
+# Identify products nearing expiration (e.g., within 7 days)
+near_expiry_threshold = 7
+near_expiry_products = df[df['Days_Until_Expiry'] <= near_expiry_threshold]
+
+# Recommend special offers or discounts for near-expiry products
+for index, row in near_expiry_products.iterrows():
+    print(f"Product {row['product_name']} is nearing expiration. Consider offering a special discount!")
+
+# Display products nearing expiration
+print("\nProducts nearing expiration within", near_expiry_threshold, "days:")
+print(near_expiry_products)
